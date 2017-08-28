@@ -980,15 +980,15 @@ public class AddressBook {
      * @return phone number argument WITHOUT prefix
      */
     private static String extractPhoneFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_PHONE) : Integer.MAX_VALUE);
-        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) : Integer.MAX_VALUE);
+        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
 
         // phone was not found
-        if (indexOfPhonePrefix == Integer.MAX_VALUE){
+        if (indexOfPhonePrefix == -1){
             return "";
         }
         // phone is last arg, target is from prefix to end of string
-        else if (indexOfPhonePrefix > indexOfEmailPrefix || indexOfEmailPrefix == Integer.MAX_VALUE) {
+        else if (indexOfPhonePrefix > indexOfEmailPrefix) {
             return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
                     PERSON_DATA_PREFIX_PHONE);
         }
@@ -1007,15 +1007,15 @@ public class AddressBook {
      * @return email argument WITHOUT prefix
      */
     private static String extractEmailFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_PHONE) : Integer.MAX_VALUE);
-        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) : Integer.MAX_VALUE);
+        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
 
         // email was not found
-        if (indexOfEmailPrefix == Integer.MAX_VALUE){
+        if (indexOfEmailPrefix == -1){
             return "";
         }
         // email is last arg, target is from prefix to end of string
-        else if (indexOfEmailPrefix > indexOfPhonePrefix || indexOfPhonePrefix == Integer.MAX_VALUE) {
+        else if (indexOfEmailPrefix > indexOfPhonePrefix) {
             return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
                     PERSON_DATA_PREFIX_EMAIL);
 
