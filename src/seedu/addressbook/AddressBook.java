@@ -134,9 +134,9 @@ public class AddressBook {
      * used by the internal String[] storage format.
      * For example, a person's name is stored as the 0th element in the array.
      */
-    private static final int PERSON_DATA_INDEX_NAME = 0;
-    private static final int PERSON_DATA_INDEX_PHONE = 1;
-    private static final int PERSON_DATA_INDEX_EMAIL = 2;
+    private static final String PERSON_DATA_INDEX_NAME = "name";
+    private static final String PERSON_DATA_INDEX_PHONE = "phone";
+    private static final String PERSON_DATA_INDEX_EMAIL = "email";
 
     /**
      * The number of data elements for a single person.
@@ -836,7 +836,7 @@ public class AddressBook {
      * @param person whose name you want
      */
     private static String getNameFromPerson(HashMap<String, String> person) {
-        return person.get("NAME");
+        return person.get(PERSON_DATA_INDEX_NAME);
     }
 
     /**
@@ -845,7 +845,7 @@ public class AddressBook {
      * @param person whose phone number you want
      */
     private static String getPhoneFromPerson(HashMap<String, String> person) {
-        return person.get("PHONE");
+        return person.get(PERSON_DATA_INDEX_PHONE);
     }
 
     /**
@@ -854,7 +854,7 @@ public class AddressBook {
      * @param person whose email you want
      */
     private static String getEmailFromPerson(HashMap<String, String> person) {
-        return person.get("EMAIL");
+        return person.get(PERSON_DATA_INDEX_EMAIL);
     }
 
     /**
@@ -867,9 +867,9 @@ public class AddressBook {
      */
     private static HashMap<String, String> makePersonFromData(String name, String phone, String email) {
         final HashMap<String, String> person = new HashMap<>();
-        person.put("NAME", name);
-        person.put("PHONE", phone);
-        person.put("EMAIL", email);
+        person.put(PERSON_DATA_INDEX_NAME, name);
+        person.put(PERSON_DATA_INDEX_PHONE, phone);
+        person.put(PERSON_DATA_INDEX_EMAIL, email);
         return person;
     }
 
@@ -966,8 +966,8 @@ public class AddressBook {
      * @return name argument
      */
     private static String extractNameFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_PHONE) : Integer.MAX_VALUE);
-        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) : Integer.MAX_VALUE);
+        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
         return encoded.substring(0, indexOfFirstPrefix).trim();
