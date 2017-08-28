@@ -966,8 +966,8 @@ public class AddressBook {
      * @return name argument
      */
     private static String extractNameFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
+        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
         return encoded.substring(0, indexOfFirstPrefix).trim();
@@ -986,14 +986,12 @@ public class AddressBook {
         // phone was not found
         if (indexOfPhonePrefix == -1){
             return "";
-        }
-        // phone is last arg, target is from prefix to end of string
-        else if (indexOfPhonePrefix > indexOfEmailPrefix) {
+        } else if (indexOfPhonePrefix > indexOfEmailPrefix) {
+            // phone is last arg, target is from prefix to end of string
             return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
                     PERSON_DATA_PREFIX_PHONE);
-        }
-        // phone is middle arg, target is from own prefix to next prefix
-        else {
+        } else {
+            // phone is middle arg, target is from own prefix to next prefix
             return removePrefixSign(
                     encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
                     PERSON_DATA_PREFIX_PHONE);
@@ -1013,15 +1011,13 @@ public class AddressBook {
         // email was not found
         if (indexOfEmailPrefix == -1){
             return "";
-        }
-        // email is last arg, target is from prefix to end of string
-        else if (indexOfEmailPrefix > indexOfPhonePrefix) {
+        } else if (indexOfEmailPrefix > indexOfPhonePrefix) {
+            // email is last arg, target is from prefix to end of string
             return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
                     PERSON_DATA_PREFIX_EMAIL);
-
-            // email is middle arg, target is from own prefix to next prefix
         } else {
             return removePrefixSign(
+                    // email is middle arg, target is from own prefix to next prefix
                     encoded.substring(indexOfEmailPrefix, indexOfPhonePrefix).trim(),
                     PERSON_DATA_PREFIX_EMAIL);
         }
