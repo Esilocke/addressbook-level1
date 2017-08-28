@@ -954,10 +954,9 @@ public class AddressBook {
     private static boolean isPersonDataExtractableFrom(String personData) {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
-                && !splitArgs[0].isEmpty() // non-empty arguments
-                && !splitArgs[1].isEmpty()
-                && !splitArgs[2].isEmpty();
+        return splitArgs.length > 1 // At least 2 arguments
+                && !splitArgs[0].isEmpty() // non-empty name + at least 1 non-empty field
+                && (!splitArgs[1].isEmpty() || !splitArgs[2].isEmpty());
     }
 
     /**
@@ -967,8 +966,8 @@ public class AddressBook {
      * @return name argument
      */
     private static String extractNameFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_PHONE) : Integer.MAX_VALUE);
+        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) : Integer.MAX_VALUE);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
         return encoded.substring(0, indexOfFirstPrefix).trim();
@@ -981,16 +980,20 @@ public class AddressBook {
      * @return phone number argument WITHOUT prefix
      */
     private static String extractPhoneFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_PHONE) : Integer.MAX_VALUE);
+        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) : Integer.MAX_VALUE);
 
+        // phone was not found
+        if (indexOfPhonePrefix == Integer.MAX_VALUE){
+            return "";
+        }
         // phone is last arg, target is from prefix to end of string
-        if (indexOfPhonePrefix > indexOfEmailPrefix) {
+        else if (indexOfPhonePrefix > indexOfEmailPrefix || indexOfEmailPrefix == Integer.MAX_VALUE) {
             return removePrefixSign(encoded.substring(indexOfPhonePrefix, encoded.length()).trim(),
                     PERSON_DATA_PREFIX_PHONE);
-
-            // phone is middle arg, target is from own prefix to next prefix
-        } else {
+        }
+        // phone is middle arg, target is from own prefix to next prefix
+        else {
             return removePrefixSign(
                     encoded.substring(indexOfPhonePrefix, indexOfEmailPrefix).trim(),
                     PERSON_DATA_PREFIX_PHONE);
@@ -1004,11 +1007,15 @@ public class AddressBook {
      * @return email argument WITHOUT prefix
      */
     private static String extractEmailFromPersonString(String encoded) {
-        final int indexOfPhonePrefix = encoded.indexOf(PERSON_DATA_PREFIX_PHONE);
-        final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
+        final int indexOfPhonePrefix = (encoded.indexOf(PERSON_DATA_PREFIX_PHONE) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_PHONE) : Integer.MAX_VALUE);
+        final int indexOfEmailPrefix = (encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) > 0 ? encoded.indexOf(PERSON_DATA_PREFIX_EMAIL) : Integer.MAX_VALUE);
 
+        // email was not found
+        if (indexOfEmailPrefix == Integer.MAX_VALUE){
+            return "";
+        }
         // email is last arg, target is from prefix to end of string
-        if (indexOfEmailPrefix > indexOfPhonePrefix) {
+        else if (indexOfEmailPrefix > indexOfPhonePrefix || indexOfPhonePrefix == Integer.MAX_VALUE) {
             return removePrefixSign(encoded.substring(indexOfEmailPrefix, encoded.length()).trim(),
                     PERSON_DATA_PREFIX_EMAIL);
 
@@ -1055,7 +1062,7 @@ public class AddressBook {
      * @param phone to be validated
      */
     private static boolean isPersonPhoneValid(String phone) {
-        return phone.matches("\\d+");    // phone nonempty sequence of digits
+        return phone.matches("\\d+") || phone.isEmpty();    // phone nonempty sequence of digits
         //TODO: implement a more permissive validation
     }
 
@@ -1066,7 +1073,7 @@ public class AddressBook {
      * @return whether arg is a valid person email
      */
     private static boolean isPersonEmailValid(String email) {
-        return email.matches("\\S+@\\S+\\.\\S+"); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
+        return email.matches("\\S+@\\S+\\.\\S+") || email.isEmpty(); // email is [non-whitespace]@[non-whitespace].[non-whitespace]
         //TODO: implement a more permissive validation
     }
 
